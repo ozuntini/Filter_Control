@@ -60,6 +60,15 @@ Si vous rencontrez quand même des problèmes de droits
 2. Créer un fichier 10-serial-usb.rules
 3. Ajouter la ligne KERNEL=="ttyUSB0",SUBSYSTEM=="tty",MODE="0666"
 
+### Modemanager
+Il est possible que ModemManager interfère avec votre périphérique USB.  
+Vous pouvez le désactiver ou le désinstaller si vous n'en avez pas besoin pour d'autres fonctions de votre système.
+```bash
+sudo systemctl stop ModemManager.service
+sudo systemctl disable ModemManager.service
+
+sudo apt-get remove modemmanager # Désinstaller complètement ModemManager si vous n'en avez pas besoin
+```
 
 ### Tester la connexion
 ```bash
