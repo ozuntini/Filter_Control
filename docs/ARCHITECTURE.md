@@ -16,20 +16,7 @@ class ConnectionError(GeminiError):
     pass
 ```
 
-### 2. **Ajouter des constantes pour les commandes**
-```python
-class Commands:
-    OPEN = ">O#"
-    CLOSE = ">C#"
-    STATUS = ">S#"
-    
-    RESPONSES = {
-        "OPENED": "*OOpened#",
-        "CLOSED": "*CClosed#"
-    }
-```
-
-### 3. **Ajouter un context manager**
+### 2. **Ajouter un context manager**
 ```python
 class GeminiAutoFlatPanel:
     def __enter__(self):
@@ -44,7 +31,7 @@ with GeminiAutoFlatPanel() as panel:
     panel.open_cover()
 ```
 
-### 4. **Ajouter des tests unitaires**
+### 3. **Ajouter des tests unitaires**
 ```python
 # tests/test_filter_controller.py
 import unittest
@@ -59,7 +46,7 @@ class TestGeminiAutoFlatPanel(unittest.TestCase):
             assert self.panel.connect() == True
 ```
 
-### 5. **Créer une classe de configuration**
+### 4. **Créer une classe de configuration**
 ```python
 from dataclasses import dataclass
 
@@ -74,12 +61,12 @@ class GeminiConfig:
     close_timeout: float = 15.0
 ```
 
-### 6. **Enrichir le README avec des diagrammes**
+### 5. **Enrichir le README avec des diagrammes**
 - Diagramme de flux d'état du couvercle
 - Architecture de communication série
 - Exemple d'intégration dans une pipeline d'astrophotographie
 
-### 7. **Ajouter du logging structuré**
+### 6. **Ajouter du logging structuré**
 ```python
 import json
 
@@ -91,14 +78,6 @@ def log_command(self, command, response, duration):
         "duration_ms": duration * 1000
     }
     self.logger.info(json.dumps(log_entry))
-```
-
-### 8. **Ajouter une méthode de monitoring/health check**
-```python
-def health_check(self):
-    """Vérifie si le panneau répond correctement"""
-    status = self.get_device_status()
-    return status is not None
 ```
 
 ---

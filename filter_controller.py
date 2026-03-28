@@ -12,6 +12,17 @@ class CoverState(Enum):
     MOVING = "moving"
     UNKNOWN = "unknown"
 
+class Commands:
+    """Constantes pour les commandes et réponses du panneau."""
+    OPEN = ">O#"
+    CLOSE = ">C#"
+    STATUS = ">S#"
+    
+    RESPONSES = {
+        "OPENED": "*OOpened#",
+        "CLOSED": "*CClosed#"
+    }
+
 
 class GeminiAutoFlatPanel:
     """Classe pour contrôler un GeminiAutoFlatPanel via USB/Serial.
@@ -138,13 +149,13 @@ class GeminiAutoFlatPanel:
         CoverState
             Etat du couvercle après commande (OPEN ou UNKNOWN).
         """
-        cover = self.send_command(">O#")
-        if cover and cover == "*OOpened#":
+        cover = self.send_command(Commands.OPEN)
+        if cover and cover == Commands.RESPONSES["OPENED"]:
             self.logger.info("Panneau déjà ouvert")
             return CoverState.OPEN
         else:
             cover = self.receive_response(15)
-            if cover and cover == "*OOpened#":
+            if cover and cover == Commands.RESPONSES["OPENED"]:
                 self.logger.info("Panneau ouvert avec succès")
                 return CoverState.OPEN
             else:
@@ -159,13 +170,13 @@ class GeminiAutoFlatPanel:
         CoverState
             Etat du couvercle après commande (CLOSED ou UNKNOWN).
         """
-        cover = self.send_command(">C#")
-        if cover and cover == "*CClosed#":
+        cover = self.send_command(Commands.CLOSE)
+        if cover and cover == Commands.RESPONSES["CLOSED"]:
             self.logger.info("Panneau déjà fermé")
             return CoverState.CLOSED
         else:
             cover = self.receive_response(15)
-            if cover and cover == "*CClosed#":
+            if cover and cover == Commands.RESPONSES["CLOSED"]:
                 self.logger.info("Panneau fermé avec succès")
                 return CoverState.CLOSED
             else:
@@ -177,14 +188,14 @@ class GeminiAutoFlatPanel:
     
         Returns:
             dict: Dictionnaire contenant :
-                - device_id (str): ID du device
-                - motor_status (str): État du moteur
-                - light_status (str): État de la lumière
-                - cover_status (str): État du couvercle
+                - device_id (str): device ID (ex: "99")
+                - motor_status (str): Motor status (0 stopped, 1 running)
+                - light_status (str): Light status (0 off, 1 on)
+                - cover_status (str): Cover status (0 moving, 1 closed, 2 open, 3 timed out)
         
             None: En cas d'erreur
         """
-        device = self.send_command(">S#")
+        device = self.send_command(Commands.STATUS)
         if device and device.startswith("*S") and device.endswith("#"):
             status = device[2:-1]
             deviceId = status[:-3]
@@ -193,11 +204,20 @@ class GeminiAutoFlatPanel:
             coverStatus = status[4]
             self.logger.info(f"Device id: {deviceId}, Motor: {motorStatus}, Light: {lightStatus}, Cover: {coverStatus}")
             return {
-                "device_id": deviceId,
-                "motor_status": motorStatus,
-                "light_status": lightStatus,
-                "cover_status": coverStatus
+                "device_id": deviceId,          # ID du device (ex: "12345")
+                "motor_status": motorStatus,    # État du moteur (ex: "0" pour arrêté, "1" pour en mouvement)
+                "light_status": lightStatus,    # État de la lumière (ex: "0" pour éteinte, "1" pour allumée)
+                "cover_status": coverStatus     # État du couvercle (ex: "0" pour fermé, "1" pour ouvert)
             }
         else:
             self.logger.error(f"Réponse de statut incorrecte: {device}")
             return None
+    
+    def health_check(self):
+        """Vérifie si le panneau répond 
+    
+        Returns:
+            None: En cas d'erreur
+        """
+        status = self.send_command(Commands.STATUS)
+        return status is not None

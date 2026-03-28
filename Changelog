@@ -6,3 +6,10 @@ Documentation & Tests unitaires
 ## Changelog 28/03/2026
 Modifications suite aux conseils de Copilot
 Ajouts de documentations
+Tests unitaires pour les fonctions de base
+Tests avec la présence d'un boitier photo connecté en USB
+Ajout de la Class Commands pour centraliser les commandes et réponses du GAFP
+Ajout d'un Health Check pour vérifier la connexion et l'état du GAFP
+Amélioration du design du retour avec des emojis pour une meilleure lisibilité dans test_filter_controller.py
+Création d'une fonction de mapping pour les statuts du moteur, de la lumière et du couvercle avec des labels plus explicites et des emojis pour une meilleure compréhension visuelle.
+Création de la fonction get_telemetry pour centraliser la récupération et le mapping des statuts du GAFP.

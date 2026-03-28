@@ -83,3 +83,14 @@ Attention à bien gérer le timeout dans la fonction **def receive_response(self
 4. Ajouter des logs facilite le débogage
 
 Vous pouvez maintenant intégrer facilement cette classe dans votre programme plus général ! 🚀
+
+## Rappel de sécurité
+Il faut être extrêmement prudent avec ce type de système, surtout lorsqu'il s'agit de manipuler des filtres solaires.  
+Tenez bien compte du retour d'état du couvercle (coverStatus) pour éviter toute situation dangereuse.  
+c.f. tableau de correspondance des états du couvercle ci-dessous retourné par la fonction get_device_status().:
+| Code | Signification | État de sécurité |
+|------|--------------|------------------|
+| 0    | SAFE - FILTER ENGAGED | ✅ Sécurisé pour l'instrument |
+| 1    | TRANSITION | ⚠️ Ne pas regarder |
+| 2    | DANGER - RETRACTED | 🔥 PHOTO UNIQUEMENT |
+| 3    | ERROR | ❌ Position inconnue |
