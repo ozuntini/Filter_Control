@@ -11,10 +11,10 @@ Exemples:
   python test_filter_controller.py Open
   python test_filter_controller.py Close
   python test_filter_controller.py Status
-  python test_filter_controller.py --port /dev/ttyUSB1 --baudrate 115200 Open
+  python test_filter_controller.py --port /dev/ttyUSB0 --baudrate 9600 Open
 """
 )
-parser.add_argument('--port', default='/dev/ttyUSB0', help='Port USB (par défaut: /dev/ttyUSB0)')
+parser.add_argument('--port', default='/dev/gflatpanel', help='Port USB (par défaut: /dev/gflatpanel)')
 parser.add_argument('--baudrate', type=int, default=9600, help='Vitesse de communication (par défaut: 9600)')
 parser.add_argument('--timeout', type=float, default=1, help='Délai d\'attente en secondes (par défaut: 1)')
 parser.add_argument('action', choices=['Open', 'Close', 'Status'], help='Action à effectuer')
@@ -25,7 +25,7 @@ def get_telemetry(deviceId, motorStatus, lightStatus, coverStatus):
     # Mapping pour le moteur
     # 0: Arrêté, 1: En mouvement
     motor_labels = {
-        0: "STOPPED 🛑",
+        0: "STOPPED ✅",
         1: "RUNNING ⚙️"
     }
 
@@ -39,7 +39,7 @@ def get_telemetry(deviceId, motorStatus, lightStatus, coverStatus):
     }
 
     return {
-        "device_id": f"UNIT_{deviceId}",
+        "device_id": f"UNIT_{deviceId}" if deviceId is not None else "UNKNOWN_DEVICE ❓",
         "motor": motor_labels.get(motorStatus, "UNKNOWN ❓"),
         "light": "ON 💡" if lightStatus == 1 else "OFF 🌑",
         "status": cover_labels.get(coverStatus, "CRITICAL ERROR 🚨")
@@ -59,50 +59,44 @@ logging.basicConfig(
 panel = GeminiAutoFlatPanel(port=args.port, baudrate=args.baudrate, timeout=args.timeout)
 
 try:
-    # Vérifier la santé du panneau avant de tenter une action
-    if panel.connect():
-        if not panel.health_check():
-            logging.error("Health check failed: Le panneau ne répond pas correctement.")
-            panel.disconnect()
-            exit(1)
-
-finally:    # OK on peut continuer, le panneau est en bonne santé
-        logging.info("Health check good: Le panneau répond correctement.")
-
-try:
     # Se connecter
     if panel.connect():
-        if args.action == 'Open':
-            print("🔓 Ouverture du panneau...")
-            cover = panel.open_cover()
-            if cover == CoverState.OPEN:
-                print("✅ Panneau ouvert avec succès")
-            else:
-                print("❌ Échec de l'ouverture du panneau")
-        elif args.action == 'Close':
-            print("🔒 Fermeture du panneau...")
-            cover = panel.close_cover()
-            if cover == CoverState.CLOSED:
-                print("✅ Panneau fermé avec succès")
-            else:
-                print("❌ Échec de la fermeture du panneau")
-        elif args.action == 'Status':
-            print("🔍 Vérification de l'état du panneau...")
-            status = panel.get_device_status()
-            telemetry = get_telemetry(
-                deviceId=status['device_id'],
-                motorStatus=int(status['motor_status']),
-                lightStatus=int(status['light_status']),
-                coverStatus=int(status['cover_status'])
-            )
-            if status:
-                print(f"✅ État du device:")
-                print(f"   ID: {telemetry['device_id']}")
-                print(f"   Moteur: {telemetry['motor']}")
-                print(f"   Lumière: {telemetry['light']}")
-                print(f"   Couvercle: {telemetry['status']}")
-            else:
-                print("❌ Impossible de lire l'état")
+        try:
+            if panel.health_check() is not None:
+                logging.info("Health check passed: Le panneau est en bonne santé.")
+            if args.action == 'Open':
+                print("🔓 Ouverture du panneau...")
+                cover = panel.open_cover()
+                if cover == CoverState.OPEN:
+                    print("✅ Panneau ouvert avec succès")
+                else:
+                        print("❌ Échec de l'ouverture du panneau")
+            elif args.action == 'Close':
+                print("🔒 Fermeture du panneau...")
+                cover = panel.close_cover()
+                if cover == CoverState.CLOSED:
+                    print("✅ Panneau fermé avec succès")
+                else:
+                    print("❌ Échec de la fermeture du panneau")
+            elif args.action == 'Status':
+                print("🔍 Vérification de l'état du panneau...")
+                status = panel.get_device_status()
+                telemetry = get_telemetry(
+                    deviceId=str(status['device_id']),
+                    motorStatus=int(status['motor_status']),
+                    lightStatus=int(status['light_status']),
+                    coverStatus=int(status['cover_status'])
+                )
+                if status:
+                    print(f"✅ État du device:")
+                    print(f"   ID: {telemetry['device_id']}")
+                    print(f"   Moteur: {telemetry['motor']}")
+                    print(f"   Lumière: {telemetry['light']}")
+                    print(f"   Couvercle: {telemetry['status']}")
+                else:
+                    print("❌ Impossible de lire l'état")
+        except Exception as e:
+            logging.error(f"Une erreur est survenue lors de l'exécution de l'action: {e}")
     else:
         print("❌ Échec de la connexion au panneau")
         

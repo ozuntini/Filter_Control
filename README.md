@@ -75,7 +75,7 @@ sudo apt-get remove modemmanager # Désinstaller complètement ModemManager si v
 python3 -c "import serial; s = serial.Serial('/dev/ttyUSB0', 9600); print('OK')"
 ```
 
-## Points importants
+## ‼️ Points importants
 1. **Consultez la documentation** de votre GeminiAutoFlatPanel GAFP_basic_commands.md.
 2. Adaptez les commandes selon votre modèle spécifique si besoin.
 3. Vous avez la possibilité de définir la position Open et Close pour l'adapter à votre besoin.  
@@ -84,7 +84,7 @@ Attention à bien gérer le timeout dans la fonction **def receive_response(self
 
 Vous pouvez maintenant intégrer facilement cette classe dans votre programme plus général ! 🚀
 
-## Rappel de sécurité
+## ⚠️ Rappel de sécurité
 Il faut être extrêmement prudent avec ce type de système, surtout lorsqu'il s'agit de manipuler des filtres solaires.  
 Tenez bien compte du retour d'état du couvercle (coverStatus) pour éviter toute situation dangereuse.  
 c.f. tableau de correspondance des états du couvercle ci-dessous retourné par la fonction get_device_status().:
@@ -94,3 +94,44 @@ c.f. tableau de correspondance des états du couvercle ci-dessous retourné par 
 | 1    | TRANSITION | ⚠️ Ne pas regarder |
 | 2    | DANGER - RETRACTED | 🔥 PHOTO UNIQUEMENT |
 | 3    | ERROR | ❌ Position inconnue |
+
+<hr style="height:8px; border:none; background-color:red;">
+
+## 💡 Gestion plus spécifique du device
+Il est possible de nommer le device dans les règles udev pour lui donner un nom plus explicite et éviter les problèmes de droits.  
+Voici un exemple de règle udev à ajouter dans /etc/udev/rules.d/99-gflatpanel.rules :
+### 1. Identification du device
+Pour être certain que la règle ne s'applique qu'à votre adaptateur spécifique, récupérez ses identifiants (ID Vendor et ID Product) :
+```bash
+lsusb
+```
+Vous devriez voir une ligne similaire à celle-ci :
+Bus 001 Device 020: ID 1a86:7523 QinHeng Electronics CH340 serial converter
+>ID=1a86 (vendor) : 7523 (product)
+### 2. Règle udev
+Créez un fichier de règles udev par exemple : /etc/udev/rules.d/99-gflatpanel.rules  
+Et ajoutez la ligne suivante en adaptant les ID Vendor et Product à votre cas :
+>ACTION=="add", SUBSYSTEM=="tty", SUBSYSTEMS=="usb", ATTRS{idVendor}=="1a86", ATTRS{idProduct}=="7523", SYMLINK+="gflatpanel", MODE="0666", RUN+="/usr/bin/stty -F /dev/%k -hupcl"
+### 3. Recharger les règles udev
+```bash
+sudo udevadm control --reload-rules
+sudo udevadm trigger
+```
+### 4. Vérification
+Brancher votre adaptateur et vérifiez que le lien symbolique /dev/gflatpanel est créé et accessible en écriture :
+```bash
+ls -l /dev/gflatpanel
+```
+Vous devriez voir quelque chose comme :
+```bash
+lrwxrwxrwx 1 root root 7 Mar 29 17:29 /dev/gflatpanel -> ttyUSB0
+```
+Vérifier le paramètre de stty :
+```bash
+stty -F /dev/ttyUSB0 -a | grep hupcl
+```
+Vous devriez voir que le hang-up on close est désactivé (hupcl = -hupcl).  
+>-parenb -parodd -cmspar cs8 **-hupcl** -cstopb cread clocal -crtscts  
+
+Maintenant vous pouvez utiliser /dev/gflatpanel dans votre code sans vous soucier des permissions ou du numéro de port qui peut changer.
+
