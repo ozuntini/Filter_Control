@@ -21,10 +21,9 @@ import time
 import logging
 import subprocess
 
-
 class CoverState(Enum):
     """Énumération pour l'état du couvercle."""
-    OPEN = "opened"
+    OPENED = "opened"
     CLOSED = "closed"
     MOVING = "moving"
     UNKNOWN = "unknown"
@@ -34,7 +33,10 @@ class Commands:
     OPEN = ">O#"
     CLOSE = ">C#"
     STATUS = ">S#"
-    
+    SETANGLE = ">M{}#"  # Commande pour régler l'angle du panneau (ex: >M45# pour 45 degrés)
+    SETCLOSE = ">F#"    # Commande pour valider l'angle dea position fermée
+    SETOPEN = ">E#"     # Commande pour valider l'angle de la position ouverte
+
     RESPONSES = {
         "OPENED": "*OOpened#",
         "CLOSED": "*CClosed#"
@@ -169,12 +171,12 @@ class GeminiAutoFlatPanel:
         cover = self.send_command(Commands.OPEN)
         if cover and cover == Commands.RESPONSES["OPENED"]:
             self.logger.info("Panneau déjà ouvert")
-            return CoverState.OPEN
+            return CoverState.OPENED
         else:
             cover = self.receive_response(15)
             if cover and cover == Commands.RESPONSES["OPENED"]:
                 self.logger.info("Panneau ouvert avec succès")
-                return CoverState.OPEN
+                return CoverState.OPENED
             else:
                 self.logger.error("Pas de confirmation d'ouverture du panneau")
                 return CoverState.UNKNOWN

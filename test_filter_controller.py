@@ -8,7 +8,6 @@ from filter_controller import GeminiAutoFlatPanel, CoverState
 import logging
 import argparse
 
-
 parser = argparse.ArgumentParser(
     description='Contrôler un GeminiAutoFlatPanel',
     formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -58,7 +57,7 @@ def get_telemetry(deviceId, motorStatus, lightStatus, coverStatus):
 # Configurer le logging
 logging.basicConfig(
     level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s'
+    format='%(asctime)s - %(levelname)s - %(filename)s:%(lineno)d - %(message)s'
 )
 
 # Créer une instance
