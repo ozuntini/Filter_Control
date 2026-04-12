@@ -1,6 +1,9 @@
 ## Création de la version v1.0.0
 - Création du fichier VERSION
 - Passage en md du changelog
+- Mise à jour du README.md
+- Création d'un requirements.txt
+- Mise à jour du pyproject.toml
 
 ## Changelog 12/04/2026
 - Modification de l'arborescence pour construire un module Python
