@@ -1,5 +1,13 @@
-## Changelog 01/04/2026
+## Changelog 12/04/2026
+- Modification de l'arborescence pour construire un module Python
+- Création du répertoire filter_control
+- Création du pyproject.toml
+- Vérification du bon fonctionnement
+
+## Changelog 11/04/2026
 Modification des entêtes des .py
+Correction du filter_controller.py
+Tests de fonctionnement
 
 ## Changelog 29/03/2026
 Amélioration de la gestion du port USB avec des messages d'erreur plus clairs.

@@ -4,7 +4,7 @@ Script de test pour le contrôle d'un GeminiAutoFlatPanel via USB/Serial.
 Ce script permet d'ouvrir ou de fermer le panneau, ou de vérifier son état actuel.
 Il utilise la classe `GeminiAutoFlatPanel` définie dans `filter_controller.py`.
 """
-from filter_controller import GeminiAutoFlatPanel, CoverState
+from filter_control.filter_controller import GeminiAutoFlatPanel, CoverState
 import logging
 import argparse
 
@@ -72,7 +72,7 @@ try:
             if args.action == 'Open':
                 print("🔓 Ouverture du panneau...")
                 cover = panel.open_cover()
-                if cover == CoverState.OPEN:
+                if cover == CoverState.OPENED:
                     print("✅ Panneau ouvert avec succès")
                 else:
                         print("❌ Échec de l'ouverture du panneau")

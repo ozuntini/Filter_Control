@@ -240,3 +240,48 @@ class GeminiAutoFlatPanel:
         """
         status = self.send_command(Commands.STATUS)
         return status is not None
+    
+    def move_to_position(self, position: int) -> bool:
+        """Déplace le panneau d'un angle spécifique.
+
+        Parameters
+        ----------
+        position : int
+            Position cible en ° de -45 (closing) à 45 (opening).
+
+        Returns
+        -------
+        bool
+            True si la commande a été envoyée avec succès, False sinon.
+        """
+        if -45 <= position <= 45:
+            command = Commands.SETANGLE.format(position)
+            response = self.send_command(command)
+            logging.info(f"Déplacement vers {position}° -> Commande: {command}, Réponse: {response}")
+            return response is not None
+        else:
+            self.logger.error("Position doit être entre -45 et 45 degrés")
+            return False
+    
+    def set_closed_position(self) -> bool:
+        """Valide l'angle de la position fermée.
+
+        Returns
+        -------
+        bool
+            True si la commande a été envoyée avec succès, False sinon.
+        """
+        response = self.send_command(Commands.SETCLOSE)
+        return response is not None
+    
+    def set_open_position(self) -> bool:
+        """Valide l'angle de la position ouverte.
+
+        Returns
+        -------
+        bool
+            True si la commande a été envoyée avec succès, False sinon.
+        """
+        response = self.send_command(Commands.SETOPEN)
+        return response is not None
+    

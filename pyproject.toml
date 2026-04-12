@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "filter_control"
+version = "0.1.0"
+description = "Bibliothèque de contrôle de filtres pour l'astrophotographie"
+readme = "README.md"
+authors = [
+    { name = "Olivier ZUNTINI", email = "olivier.zuntini@gmail.com" }
+]
+# Indiquez ici les dépendances nécessaires au fonctionnement de Filter_Control
+# Par exemple : pyserial, numpy, etc.
+dependencies = [
+    "pyserial",
+]
+requires-python = ">=3.7"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["filter_control*"]

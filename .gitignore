@@ -1,4 +1,18 @@
-__pycache__/
+# Fichiers à ignorer par Git
 Exemple_markdown.md
 Exemples_python.py
 Exemple_Fail-safe.md
+
+# Métadonnées de build et distribution
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# Fichiers de cache Python
+__pycache__/
+*.py[cod]
+
+# Environnements virtuels (si vous en utilisez)
+venv/
+.venv/
