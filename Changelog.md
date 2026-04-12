@@ -1,3 +1,7 @@
+## Création de la version v1.0.0
+- Création du fichier VERSION
+- Passage en md du changelog
+
 ## Changelog 12/04/2026
 - Modification de l'arborescence pour construire un module Python
 - Création du répertoire filter_control
