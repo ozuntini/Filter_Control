@@ -16,3 +16,4 @@ __pycache__/
 # Environnements virtuels (si vous en utilisez)
 venv/
 .venv/
+._*
