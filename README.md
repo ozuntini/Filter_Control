@@ -37,6 +37,12 @@ sudo apt-get update
 sudo apt-get install python3-pip
 pip install pyserial  # A faire dans l'environnement virtuel
 ```
+ou
+```bash
+# Installer les dépendances Python
+pip install -r requirements.txt
+````
+
 ### Virtual environment
 ```bash
 python3 -m venv ~/filter_ctrl_env

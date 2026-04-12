@@ -1,0 +1,4 @@
+# Filter_Control dependencies
+
+# Serial communication for hardware control
+pyserial>=3.5.0
