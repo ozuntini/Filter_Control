@@ -22,7 +22,7 @@ Exemples:
 parser.add_argument('--port', default='/dev/gflatpanel', help='Port USB (par défaut: /dev/gflatpanel)')
 parser.add_argument('--baudrate', type=int, default=9600, help='Vitesse de communication (par défaut: 9600)')
 parser.add_argument('--timeout', type=float, default=1, help='Délai d\'attente en secondes (par défaut: 1)')
-parser.add_argument('action', choices=['Open', 'Close', 'Status'], help='Action à effectuer')
+parser.add_argument('action', choices=['Open', 'Close', 'Status', 'SetPosition'], help='Action à effectuer')
 
 args = parser.parse_args()
 
@@ -49,6 +49,19 @@ def get_telemetry(deviceId, motorStatus, lightStatus, coverStatus):
         "light": "ON 💡" if lightStatus == 1 else "OFF 🌑",
         "status": cover_labels.get(coverStatus, "CRITICAL ERROR 🚨")
     }
+
+def get_setting_position(position_setting, position_status):
+    # Mapping pour le setting des positions closed et open
+    # 0 = No et 1 = Ready
+    setting_labels = {
+        0: "No ⚠️",
+        1: "Ok ✅"
+    }
+    return {
+        "position_setting": setting_labels.get(position_setting, "UNKNOWN ❓"),
+        "position_status": position_status
+    }
+
 
 # Exemple d'utilisation :
 # data = get_telemetry(1, 0, 0, 0)
@@ -100,6 +113,20 @@ try:
                     print(f"   Couvercle: {telemetry['status']}")
                 else:
                     print("❌ Impossible de lire l'état")
+            elif args.action == 'SetPosition':
+                print("📐 Vérification du setting des positions...")
+                status = panel.get_angle_set()
+                telemetry = get_setting_position(
+                    position_setting=int(status['position_setting']),
+                    position_status=str(status['position_status'])
+                )
+                if status:
+                    print(f"✅ État du setting:")
+                    print(f"   Setting: {telemetry['position_setting']}")
+                    print(f"   Status: {telemetry['position_status']}")
+                else:
+                    print("❌ Impossible de lire l'état")
+
         except Exception as e:
             logging.error(f"Une erreur est survenue lors de l'exécution de l'action: {e}")
     else:

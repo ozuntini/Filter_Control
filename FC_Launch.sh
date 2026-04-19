@@ -20,7 +20,7 @@ PARAM=""
 echo "=== Lanceur test_filter_controller ==="
 
 if [ "$1" == "" ] || [ -d "$1" ] || [ "$1" == "-h" ] || [ "$#" -lt 1 ] || [ "$#" -gt 1 ]; then
-    echo "usage: "$0" [-o|--open ou -c|--close ou -s|--status]"
+    echo "usage: "$0" [-o|--open ou -c|--close ou -s|--status ou -p|--position]"
     exit
 else
     # Traiter les paramètres
@@ -36,6 +36,10 @@ else
             ;;
         -s|--status)
             PARAM="Status"
+            shift
+            ;;
+        -p|--position)
+            PARAM="SetPosition"
             shift
             ;;
         *)

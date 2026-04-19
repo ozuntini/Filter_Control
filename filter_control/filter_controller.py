@@ -33,13 +33,15 @@ class Commands:
     OPEN = ">O#"
     CLOSE = ">C#"
     STATUS = ">S#"
-    SETANGLE = ">M{}#"  # Commande pour régler l'angle du panneau (ex: >M45# pour 45 degrés)
-    SETCLOSE = ">F#"    # Commande pour valider l'angle dea position fermée
-    SETOPEN = ">E#"     # Commande pour valider l'angle de la position ouverte
+    SETANGLE = ">M{}#"      # Commande pour régler l'angle du panneau (ex: >M45# pour 45 degrés)
+    SETCLOSE = ">F#"        # Commande pour valider l'angle dea position fermée
+    SETOPEN = ">E#"         # Commande pour valider l'angle de la position ouverte
+    STATUS_ANGLE = ">A#"    # Commande pour récupérer l'angle actuel du panneau (réponse: *A{}Ready# 0=No 1=Ready)
 
     RESPONSES = {
         "OPENED": "*OOpened#",
-        "CLOSED": "*CClosed#"
+        "CLOSED": "*CClosed#",
+        "ANGLE": "*A{}Ready#"   # Réponse pour savoir si les position sont set ou pas (ex: *A1Ready# pour position ouverte validée, *A0Ready# pour non validée)
     }
 
 
@@ -241,7 +243,7 @@ class GeminiAutoFlatPanel:
         status = self.send_command(Commands.STATUS)
         return status is not None
     
-    def move_to_position(self, position: int) -> bool:
+    def move_to_position(self, position: int) -> str | bool:
         """Déplace le panneau d'un angle spécifique.
 
         Parameters
@@ -257,13 +259,22 @@ class GeminiAutoFlatPanel:
         if -45 <= position <= 45:
             command = Commands.SETANGLE.format(position)
             response = self.send_command(command)
-            logging.info(f"Déplacement vers {position}° -> Commande: {command}, Réponse: {response}")
-            return response is not None
+            if response and response.startswith("*M") and response.endswith("#"):
+                self.logger.info(f"Déplacement vers {position}° confirmé -> Commande: {command}, Réponse: {response}")
+                return response is not None
+            else:
+                response = self.receive_response(30)
+                if response and response.startswith("*M") and response.endswith("#"):
+                    self.logger.info(f"Déplacement vers {position}° confirmé -> Commande: {command}, Réponse: {response}")
+                    return response is not None
+                else:
+                    self.logger.info(f"Pas de confirmation de déplacement vers {position}° -> Commande: {command}, Réponse: {response}")
+                    return False
         else:
             self.logger.error("Position doit être entre -45 et 45 degrés")
             return False
     
-    def set_closed_position(self) -> bool:
+    def set_closed_position(self) -> str | bool:
         """Valide l'angle de la position fermée.
 
         Returns
@@ -274,7 +285,7 @@ class GeminiAutoFlatPanel:
         response = self.send_command(Commands.SETCLOSE)
         return response is not None
     
-    def set_open_position(self) -> bool:
+    def set_open_position(self) -> str | bool:
         """Valide l'angle de la position ouverte.
 
         Returns
@@ -285,3 +296,26 @@ class GeminiAutoFlatPanel:
         response = self.send_command(Commands.SETOPEN)
         return response is not None
     
+    def get_angle_set(self) -> dict | None:
+        """Vérifie le setting de l'angle.
+        *A0Ready#
+        Returns
+        -------
+            dict: Dictionnaire contenant :
+                - position_setting (str) : Setting 0 ou 1
+                - position_status" (str) : Ready
+        
+            None: En cas d'erreur  
+        """
+        device = self.send_command(Commands.STATUS_ANGLE)
+        if device and device.startswith("*A") and device.endswith("#"):
+            position_setting = device[2]
+            position_status = device[3:-1]
+            self.logger.info(f"Position Setting: {position_setting}, Position Status: {position_status}")
+            return {
+                "position_setting": position_setting,          # 0 = No et 1 = Ready
+                "position_status": position_status             # Toujours Ready
+            }
+        else:
+            self.logger.error(f"Réponse de setting angle incorrecte: {device}")
+            return None

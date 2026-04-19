@@ -24,8 +24,13 @@
 |>Yx#|None|Set Brightness Mode, x = 0 Low Bri, x = 1 High Bri|
 |>O#|*OOpened#|Open cover|
 |>C#|*CClosed#|Close cover|
-|>A#|*Ax#|is ready? Is Opening and closing angle set? 0 NO, 1 Ready|
+|>A#|*Ax#|is ready? Is Opening and closing angle set? 0->NO, 1->Ready|
 |>Mxxx#|NC|Move to xxx Position , xxx is angle , like -1, -10, -45 for closing|
 |||1,10,45 for opening|
 |>F#|NC|Set curr position as  Closed position.|
 |>E#|NC|Set curr position as Opened position.|
+
+## Setting process
+Warning: The tuning process requires high precision.
+1. Move to the closed position using >Mxx#, then confirm with the >F# function.
+2. Move to the open position using >Mxx#, then confirm with the >E# function.

@@ -1,3 +1,7 @@
+## Changelog 13/04/2026
+- Ajout de la fonction de vérification du setting de position >A#
+- Adaptation des programmes et de la documentation
+
 ## Création de la version v1.0.0
 - Création du fichier VERSION
 - Passage en md du changelog
