@@ -1,3 +1,9 @@
+## Changelog 
+- Ajout dans le readme du lien pour télécharger les fichiers d'imprimante 3D.
+
+## Création de la version v1.0.1
+- Intégration de la gestion du setting
+
 ## Changelog 13/04/2026
 - Ajout de la fonction de vérification du setting de position >A#
 - Adaptation des programmes et de la documentation

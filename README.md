@@ -28,6 +28,7 @@ La différence de luminosité entre la phase partielle C1 à C2 et C3 à C4 et l
 Pendant la phase totale il est nécessaire de retirer le filtre solaire obligatoire pendant la phase partielle.  
 Pour automatiser ça je m'appuie sur un Automatic FlatPanel de la marque
 [Gemini Astro](https://gemini-astro.com). Dont j'ai remplacé l'écran de flat par un filtre solaire.  
+Le lien [Thingiverse](https://www.thingiverse.com/thing:7340199) vous permettra de télécharger le fichier pour imprimer le support du filtre solaire sur une imprimante 3D.  
 Le code de ce dépôt vous permettra de piloter ce système branché en USB sur une Raspberry.
 
 ## 📋 Prérequis
