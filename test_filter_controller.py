@@ -68,11 +68,15 @@ def get_setting_position(position_setting, position_status):
 # data = get_telemetry(1, 0, 0, 0)
 # print(f"État actuel : {data['status']}")
 
+# Configuration du logger
+DOSSIER_LOG = os.path.expanduser("~/Eclipse_Project/logs")
+if not os.path.exists(DOSSIER_LOG):
+    os.makedirs(DOSSIER_LOG)
+
 # Configurer le logging
-log_file = os.path.expanduser("~/log/test_filter_controller.log")
+log_file = os.path.join(DOSSIER_LOG, "test_filter_controller.log")
 logging.basicConfig(
     filename=log_file,
-    filemode='a',
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(filename)s:%(lineno)d - %(message)s'
 )

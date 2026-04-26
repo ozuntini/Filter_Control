@@ -1,4 +1,5 @@
 ## Changelog 26/04/2026
+- Modification du fichier log
 - Adaptation pour un regroupement dans Eclipse Project
 - Ajout dans le readme du lien pour télécharger les fichiers d'imprimante 3D.
 
