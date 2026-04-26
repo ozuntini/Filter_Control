@@ -51,9 +51,9 @@ else
 fi
 
 # Activation de l'environnement virtuel si disponible
-if [ -f ~/filter_ctrl_env/bin/activate ]; then
+if [ -f ~/eclipse_env/bin/activate ]; then
     echo "Activation de l'environnement virtuel..."
-    source ~/filter_ctrl_env/bin/activate
+    source ~/eclipse_env/bin/activate
 fi
 
 # Lancement du script principal

@@ -1,4 +1,5 @@
-## Changelog 
+## Changelog 26/04/2026
+- Adaptation pour un regroupement dans Eclipse Project
 - Ajout dans le readme du lien pour télécharger les fichiers d'imprimante 3D.
 
 ## Création de la version v1.0.1

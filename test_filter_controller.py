@@ -7,6 +7,7 @@ Il utilise la classe `GeminiAutoFlatPanel` définie dans `filter_controller.py`.
 from filter_control.filter_controller import GeminiAutoFlatPanel, CoverState
 import logging
 import argparse
+import os
 
 parser = argparse.ArgumentParser(
     description='Contrôler un GeminiAutoFlatPanel',
@@ -68,7 +69,10 @@ def get_setting_position(position_setting, position_status):
 # print(f"État actuel : {data['status']}")
 
 # Configurer le logging
+log_file = os.path.expanduser("~/log/test_filter_controller.log")
 logging.basicConfig(
+    filename=log_file,
+    filemode='a',
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(filename)s:%(lineno)d - %(message)s'
 )
