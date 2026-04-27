@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "filter_control"
-version = "1.0.1"
+version = "1.1.0"
 description = "Bibliothèque de contrôle de filtres pour l'astrophotographie"
 readme = "README.md"
 authors = [
